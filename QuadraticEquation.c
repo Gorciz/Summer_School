@@ -2,62 +2,29 @@
 #include <stdio.h>
 #include <TXLib.h>
 
-int SolveQE (double a, double b, double c, double *x1, double *x2)
-    {
+#define INF_N_ROOTS -1
+#define EQL_TO_ZERO 0
+#define LSS_THAN_ZERO 1
+#define GRT_THAN_ZERO 2
 
-    double dscr = b*b - 4*a*c;
+const double Precision = 1E-10;
 
-    if (dscr > 0)
-        {
-        if (a == 0)
-            {
-            *x1 = (-(c / b));
-            return 1;
-            }
-        else
-            {
-            *x1 = ((-b + sqrt(dscr)) / (2*a));
-            *x2 = ((-b - sqrt(dscr)) / (2*a));
-            return 2;
-            }
-        }
+int SolveQE (double a, double b, double c, double *x1, double *x2);
 
-    if (dscr == 0)
-        {
-        if (a == 0)
-            {
-             if (c == 0)
-                {
-                return -1;
-                }
-            if (c != 0)
-                {
-                return 0;
-                }
-            }
-        else
-            {
-            *x1 = (-b/ (2*a));
-            return 1;
-            }
-        }
+int ZeroComp (double param);
 
-    if (dscr < 0)
-        {
-        return 0;
-        }
-    }
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 int main()
     {
 
-    double a = 0, b = 0, c = 0;
-    double x1 = 0, x2 = 0;
-
     printf ("- Quadratic equation solver\n\n");
     printf ("- Enter coefficients a, b, c: ");
 
-    scanf ("%lg %lg %lg", &a, &b, &c);              /*ïîäðîáíåå ïî÷åìó &a, &b, &c*/
+    double a = 0, b = 0, c = 0;
+    scanf ("%lg %lg %lg", &a, &b, &c);              //ispravit'(((chto-to ya ne ponyal kak ispravlyat')))
+
+    double x1 = 0, x2 = 0;
     int nRoots = SolveQE (a, b, c, &x1, &x2);
 
     switch (nRoots)
@@ -68,7 +35,7 @@ int main()
                 break;
         case 2: printf ("\nx1 = %lg, x2 = %lg", x1, x2);
                 break;
-        case -1: printf ("\nAny number");
+        case INF_N_ROOTS: printf ("\nAny number");
                 break;
         default: printf ("\nError: number of roots = %d\n", nRoots);
                  return 1;
@@ -76,3 +43,71 @@ int main()
     return 0;
     }
 
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+int SolveQE (double a, double b, double c, double *x1, double *x2)
+    {
+
+    if (ZeroComp(a) == EQL_TO_ZERO)
+        {
+        if (ZeroComp(b) == GRT_THAN_ZERO or ZeroComp(b) == LSS_THAN_ZERO)
+            {
+            *x1 = (-(c / b));
+            return 1;
+            }
+        else
+            {
+            if (ZeroComp(c) == EQL_TO_ZERO)
+                {
+                return INF_N_ROOTS;
+                }
+            else
+                {
+                return 0;
+                }
+            }
+        }
+
+    else
+        {
+
+        double dscr = b * b - 4 * a * c;
+
+        if (ZeroComp(dscr) == GRT_THAN_ZERO)
+            {
+
+            double sqrt_dscr = sqrt(dscr);
+
+            *x1 = ((-b + sqrt_dscr) / (2 * a));
+            *x2 = ((-b - sqrt_dscr) / (2 * a));
+            return 2;
+            }
+        else if (ZeroComp(dscr) == EQL_TO_ZERO )
+            {
+            *x1 = (-b / (2 * a));
+            return 1;
+            }
+        else
+            {
+            return 0;
+            }
+        }
+    }
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+int ZeroComp (double param)
+    {
+
+    if (param > Precision)
+        {
+        return GRT_THAN_ZERO;
+        }
+    if (param < - Precision)
+        {
+        return LSS_THAN_ZERO;
+        }
+    else
+        {
+        return EQL_TO_ZERO ;
+        }
+    }
