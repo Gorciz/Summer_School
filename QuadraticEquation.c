@@ -2,8 +2,6 @@
 #include <stdio.h>
 #include <TXLib.h>
 
-const double Precision = 1E-6;
-
 int SolveQE (double a, double b, double c, double *x1, double *x2)
     {
 
@@ -56,7 +54,7 @@ int main()
     printf ("- Quadratic equation solver\n\n");
     printf ("- Enter coefficients a, b, c: ");
 
-    scanf ("%lg %lg %lg", &a, &b, &c);              /*подробнее почему &a, &b, &c*/
+    scanf ("%lg %lg %lg", &a, &b, &c);              /*ГЇГ®Г¤Г°Г®ГЎГ­ГҐГҐ ГЇГ®Г·ГҐГ¬Гі &a, &b, &c*/
     int nRoots = SolveQE (a, b, c, &x1, &x2);
 
     switch (nRoots)
