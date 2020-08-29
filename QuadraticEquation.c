@@ -35,8 +35,11 @@ int SolveQE (double a, double b, double c, double *x1, double *x2)
                 return 0;
                 }
             }
-        *x1 = (-b/ (2*a));
-        return 1;
+        else
+            {
+            *x1 = (-b/ (2*a));
+            return 1;
+            }
         }
 
     if (dscr < 0)
