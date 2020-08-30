@@ -3,15 +3,12 @@
 #include <TXLib.h>
 
 #define INF_N_ROOTS -1
-#define EQL_TO_ZERO 0
-#define LSS_THAN_ZERO 1
-#define GRT_THAN_ZERO 2
 
 const double Precision = 1E-10;
 
 int SolveQE (double a, double b, double c, double *x1, double *x2);
 
-int ZeroComp (double param);
+int IsZero (double value);
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -22,7 +19,7 @@ int main()
     printf ("- Enter coefficients a, b, c: ");
 
     double a = 0, b = 0, c = 0;
-    scanf ("%lg %lg %lg", &a, &b, &c);              //ispravit'(chto-to ya ne ponyal kak ispravlyat')
+    scanf ("%lg %lg %lg", &a, &b, &c);              //проверить с помощью if, сделать как цикл (+ посмотреть как очистить буфер)
 
     double x1 = 0, x2 = 0;
     int nRoots = SolveQE (a, b, c, &x1, &x2);
@@ -48,45 +45,87 @@ int main()
 int SolveQE (double a, double b, double c, double *x1, double *x2)
     {
 
-    if (ZeroComp(a) == EQL_TO_ZERO)
+    if (IsZero(a))
         {
-        if (ZeroComp(b) == GRT_THAN_ZERO or ZeroComp(b) == LSS_THAN_ZERO)
+        if (!IsZero(b))
             {
-            *x1 = (-(c / b));
-            return 1;
+            if (!IsZero(c))     // <-- a=0 b!=0 c!=0
+                {
+                *x1 = (-(c / b));
+                return 1;
+                }
+            else    // <-- a=0 b!=0 c=0
+                {
+                *x1 = 0;
+                return 1;
+                }
             }
         else
             {
-            if (ZeroComp(c) == EQL_TO_ZERO)
+            if (!IsZero(c))    // <-- a=0 b=0 c!=0
+                {
+                return 0;
+                }
+            else    // <-- a=0 b=0 c=0
                 {
                 return INF_N_ROOTS;
                 }
-            else
+            }
+        }
+
+    else if (IsZero(c))
+        {
+         if (!IsZero(a))
+            {
+            if (!IsZero(b))    // <-- a!=0 b!=0 c=0
+                {
+                *x1 = 0;
+                *x2 = (-(b / a));
+                return 2;
+                }
+            else    // <-- a!=0 b=0 c=0
+                {
+                *x1 = 0;
+                return 1;
+                }
+            }
+        }
+
+    else if (IsZero(b))
+        {
+        if (!IsZero(a))
+            {
+            if (c < 0)    // <-- a!=0 b=0 c>0
+                {
+                double sqrt_mns_c_div_a = sqrt(-(c / a));
+                *x1 = sqrt_mns_c_div_a;
+                *x2 = -sqrt_mns_c_div_a;
+                return 2;
+                }
+            else    // <-- a!=0 b=0 c<0
                 {
                 return 0;
                 }
             }
         }
 
-    else
+    else    // <-- a!=0 b!=0 c!=0
         {
-
         double dscr = b * b - 4 * a * c;
 
-        double var1 = -b / (2 * a);                  // var1?
+        double reverse2a = 1 / (2 * a);
 
-        if (ZeroComp(dscr) == GRT_THAN_ZERO)
+        if (dscr > 0)
             {
+            double sqrt_dscr = sqrt(dscr);
 
-            double var2 = sqrt(dscr) / (2 * a);      // var2?
-
-            *x1 = var1 + var2;
-            *x2 = var1 - var2;
+            *x1 = (-b + sqrt_dscr) * reverse2a;
+            *x2 = (-b - sqrt_dscr) * reverse2a;
             return 2;
             }
-        else if (ZeroComp(dscr) == EQL_TO_ZERO )
+        else if (IsZero(dscr))
             {
-            *x1 = var1;
+            *x1 = -b * reverse2a;
             return 1;
             }
         else
@@ -97,19 +136,14 @@ int SolveQE (double a, double b, double c, double *x1, double *x2)
     }
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-int ZeroComp (double param)
+int IsZero (double value)
     {
-
-    if (param > Precision)
+    if (fabs(value) > Precision)
         {
-        return GRT_THAN_ZERO;
-        }
-    else if (param < -Precision)
-        {
-        return LSS_THAN_ZERO;
+        return 0;
         }
     else
         {
-        return EQL_TO_ZERO;
+        return 1;
         }
     }
