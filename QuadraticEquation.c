@@ -22,7 +22,7 @@ int main()
     printf ("- Enter coefficients a, b, c: ");
 
     double a = 0, b = 0, c = 0;
-    scanf ("%lg %lg %lg", &a, &b, &c);              //ispravit'(((chto-to ya ne ponyal kak ispravlyat')))
+    scanf ("%lg %lg %lg", &a, &b, &c);              //ispravit'(chto-to ya ne ponyal kak ispravlyat')
 
     double x1 = 0, x2 = 0;
     int nRoots = SolveQE (a, b, c, &x1, &x2);
@@ -73,18 +73,20 @@ int SolveQE (double a, double b, double c, double *x1, double *x2)
 
         double dscr = b * b - 4 * a * c;
 
+        double var1 = -b / (2 * a);                  // var1?
+
         if (ZeroComp(dscr) == GRT_THAN_ZERO)
             {
 
-            double sqrt_dscr = sqrt(dscr);
+            double var2 = sqrt(dscr) / (2 * a);      // var2?
 
-            *x1 = ((-b + sqrt_dscr) / (2 * a));
-            *x2 = ((-b - sqrt_dscr) / (2 * a));
+            *x1 = var1 + var2;
+            *x2 = var1 - var2;
             return 2;
             }
         else if (ZeroComp(dscr) == EQL_TO_ZERO )
             {
-            *x1 = (-b / (2 * a));
+            *x1 = var1;
             return 1;
             }
         else
@@ -102,7 +104,7 @@ int ZeroComp (double param)
         {
         return GRT_THAN_ZERO;
         }
-    if (param < - Precision)
+    else if (param < - Precision)
         {
         return LSS_THAN_ZERO;
         }
