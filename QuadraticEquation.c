@@ -104,12 +104,12 @@ int ZeroComp (double param)
         {
         return GRT_THAN_ZERO;
         }
-    else if (param < - Precision)
+    else if (param < -Precision)
         {
         return LSS_THAN_ZERO;
         }
     else
         {
-        return EQL_TO_ZERO ;
+        return EQL_TO_ZERO;
         }
     }
